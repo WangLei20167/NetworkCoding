@@ -262,22 +262,17 @@ void CNetworkCodingDlg::OnBnClickedCode()
 	
 	fseek(fp, 0, SEEK_SET);     //指向文件开始
 	fread(buffer, 1, nSize, fp);//复制文件到buffer数组
-
-
 	fclose(fp);
 
-	byte *p = buffer;           //用来遍历buffer数组
-	FILE *fpPart;
-	char partname[32];
+	           //用来遍历buffer数组
 
-	
-	
+
 	byte** Buf;                                //文件数据存入二维数组中K*nLen
 	Buf = new byte*[K];                        //把buffer数组存入二维数组Buf
 	for (i = 0; i < K; i++){
 		Buf[i] = new byte[nLen];
 	}
-	p = buffer;
+	byte *p = buffer;
 	for (i = 0; i < K; i++){
 		for (j = 0; j < nLen; j++){
 			Buf[i][j] = *p;
@@ -353,7 +348,7 @@ void CNetworkCodingDlg::OnBnClickedCode()
 	for (i = 1; i <= N; i++)
 	{
 		_snprintf_s(codeFile, 32, "codeFile%d.", i);//创建文件，为文件命名
-		strcat_s(codeFile, T2A(g_extName.GetBuffer()));
+		strcat_s(codeFile, T2A(g_extName.GetBuffer()));//把扩展名连接到文件名
 		fopen_s(&fpCd,codeFile, "wb");
 		fwrite(Mat[i - 1], 1, 1 + K + nLen, fpCd);//写入
 		fclose(fpCd);
