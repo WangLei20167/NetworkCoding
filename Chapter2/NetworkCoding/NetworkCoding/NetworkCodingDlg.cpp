@@ -294,6 +294,7 @@ void CNetworkCodingDlg::OnBnClickedCode()
 	}
 	
 	CString str;
+	srand((unsigned)time(NULL));
 	for (i = 0; i < N; i++)      //生成随机矩阵
 	{
 		for (j = 0; j < K; j++)
@@ -433,7 +434,7 @@ void CNetworkCodingDlg::OnBnClickedRecovery()
 	Step_info += "开始解码\r\n1、确定解码获取几个codeFile文件，随机获取用来解码的codeFile文件的序号(codeFile为编码后的文件)";
 	Scroll();
 
-	
+	srand((unsigned)time(NULL));
 	int num = 0;             //随机获取用哪个文件来获取解码时需要的文件个数和文件长度    
 	num = 1 + rand() % N;
 	
