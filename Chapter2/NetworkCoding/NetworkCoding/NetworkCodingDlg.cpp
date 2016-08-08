@@ -264,7 +264,7 @@ void CNetworkCodingDlg::OnBnClickedCode()
 	fread(buffer, 1, nSize, fp);//复制文件到buffer数组
 	fclose(fp);
 
-	           //用来遍历buffer数组
+	          
 
 
 	byte** Buf;                                //文件数据存入二维数组中K*nLen
@@ -272,7 +272,7 @@ void CNetworkCodingDlg::OnBnClickedCode()
 	for (i = 0; i < K; i++){
 		Buf[i] = new byte[nLen];
 	}
-	byte *p = buffer;
+	byte *p = buffer;            //用来遍历buffer数组
 	for (i = 0; i < K; i++){
 		for (j = 0; j < nLen; j++){
 			Buf[i][j] = *p;
@@ -301,7 +301,6 @@ void CNetworkCodingDlg::OnBnClickedCode()
 			codeMatrix[i][j] = rand() % 256;
 			str.Format(_T("%-6d"), codeMatrix[i][j]);
 			Step_info += str;
-//			Step_info += "     ";
 		}
 		
 		Step_info += "\r\n";
@@ -557,9 +556,9 @@ void CNetworkCodingDlg::OnBnClickedRecovery()
 	fopen_s(&fp1,fileName, "wb");
 	for (i = 0; i < nPart; i++)
 	{
-		fwrite(MAT4[i], 1, nLength - nPart - 1, fp);//写入
+		fwrite(MAT4[i], 1, nLength - nPart - 1, fp1);//写入
 	}
-	fclose(fp);
+	fclose(fp1);
 
 	
 	//clear the memory
@@ -986,13 +985,12 @@ void CNetworkCodingDlg::OnBnClickedRecode()
 
 	
 	FILE *fp;
-	int part=0;                          //取出编码前分成的部分个数
+	                          //取出编码前分成的部分个数
 
 	USES_CONVERSION;
 	_snprintf_s(codeFile, 32, "codeFile%d.", fileNum[0]);
 	strcat_s(codeFile, T2A(g_extName.GetBuffer()));
 	fopen_s(&fp, codeFile, "rb");
-	fread(&part, 1, 1, fp);
 	fseek(fp, 0, SEEK_END);
 	long length = 0;						
 	length = ftell(fp);					  //获取codeFile文件的长度
