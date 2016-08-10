@@ -56,7 +56,7 @@ CNetworkCodingDlg::CNetworkCodingDlg(CWnd* pParent /*=NULL*/)
 	, N(6)
 	, g_filePath(_T(""))
 	
-	, Step_info(_T("程序执行步骤\r\n"))
+	, Step_info(_T("Program Operation Process\r\n"))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	g_flag = 0;
@@ -86,6 +86,7 @@ BEGIN_MESSAGE_MAP(CNetworkCodingDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_Clear, &CNetworkCodingDlg::OnBnClickedClear)
 	ON_EN_CHANGE(IDC_Progress, &CNetworkCodingDlg::OnEnChangeProgress)
 	ON_BN_CLICKED(IDC_Recode, &CNetworkCodingDlg::OnBnClickedRecode)
+	
 END_MESSAGE_MAP()
 
 
@@ -180,10 +181,12 @@ HCURSOR CNetworkCodingDlg::OnQueryDragIcon()
 void CNetworkCodingDlg::OnBnClickedSelect()
 {
 	// TODO: Add your control notification handler code here
-	Step_info += "23";
-	UpdateData(TRUE);
 	
-	Step_info += "1、开始选择文件";
+	UpdateData(TRUE);
+	if (g_flag == 2){
+		OnBnClickedClear();
+	}
+	Step_info += "1、Start selecting a file.";
 	Scroll();
 	int flag = 0;
 	CFileDialog opendlg(TRUE, _T("*"), _T("*"), OFN_OVERWRITEPROMPT, _T("所有文件(*.*;)|*.*||"), NULL);//选择文件
@@ -193,7 +196,7 @@ void CNetworkCodingDlg::OnBnClickedSelect()
 		flag = 1;
 	}
 	if (flag == 0){
-		Step_info += "你没有选择文件";
+		Step_info += "You don't have a choice of files.";
 		Scroll();
 		return;
 	}
@@ -202,14 +205,14 @@ void CNetworkCodingDlg::OnBnClickedSelect()
 	char* pfilename = T2A(g_filePath);
 	FILE* fp;
 	if (fopen_s(&fp, pfilename, "rb")){
-		Step_info += "文件打开失败";
+		Step_info += "File open failed.";
 		return;
 	}
 	
 
 	g_flag = 1;    //g_flag全局变量用来控制按钮的点击次序，无序点击会导致程序崩溃
-	Step_info += "2、文件选择成功\r\n点击Code按钮开始编码\r\n";
-	Step_info += "请输入N，K的值，而且N>K。如果没有输入，将使用默认值N=6，K=4";
+	Step_info += "2、File selection success\r\nClick on the Code button to start coding.\r\n";
+	Step_info += "Please enter the value of N, K, and N>K. if there is no input, will use the default value N=6, K=4.";
 	Scroll();
 }
 
@@ -225,24 +228,22 @@ void CNetworkCodingDlg::OnBnClickedCode()
 
 	UpdateData(TRUE);
 	if (g_flag == 0){
-		Step_info += "请点击Select按钮，选择一个文件";
+		Step_info += "Please click the Select button to select a file.";
 		Scroll();
 		return;
 	}
 	if (N < K||N==K){
-		Step_info += "请输入N>K";
+		Step_info += "Please input N>K.";
 		Scroll();
 		return;
 	}
 
 	
-	Step_info += "开始编码文件\r\n1、将文件以二进制方式读入二维数组";
+	Step_info += "Start coding.\r\n1、Read the file in binary mode into a two-dimensional array.";
 	Scroll();
 	
 
 	int i, j;
-	
-	g_extName = g_filePath.Right(g_filePath.GetLength() - g_filePath.ReverseFind('.') - 1);//获取文件的扩展名
 	USES_CONVERSION;
 	char* pfilename = T2A(g_filePath);
 	FILE* fp;
@@ -281,7 +282,7 @@ void CNetworkCodingDlg::OnBnClickedCode()
 	}
 	delete[] buffer;
 	
-	Step_info += "2、获取随机编码矩阵\r\n获得的编码矩阵为";
+	Step_info += "2、Get random code matrix.\r\nThe following is the encoding matrix:";
 	Scroll();
 
 	/************************************************************************/
@@ -300,14 +301,15 @@ void CNetworkCodingDlg::OnBnClickedCode()
 		for (j = 0; j < K; j++)
 		{
 			codeMatrix[i][j] = rand() % 256;
-			str.Format(_T("%-6d"), codeMatrix[i][j]);
+			str.Format(_T("%d"), codeMatrix[i][j]);
+			str +="\t";
 			Step_info += str;
 		}
 		
 		Step_info += "\r\n";
 	}
 	
-	Step_info += "3、编码，用编码矩阵乘以读入文件的矩阵";
+	Step_info += "3、Encoding. Using the encoding matrix to multiply the file data matrix.";
 	Scroll();
 	
 	
@@ -339,11 +341,13 @@ void CNetworkCodingDlg::OnBnClickedCode()
 	
 
 	//把矩阵matrix2分开存入N个codeFile文件
-	Step_info += "4、把获得的矩阵分开写入N个codeFile文件，编码结束";
+	Step_info += "4、The matrix is written separately codeFile N file, the end of the code.";
 	Scroll();
 
 	FILE *fpCd;
 	char codeFile[32];
+	g_extName = g_filePath.Right(g_filePath.GetLength() - g_filePath.ReverseFind('.') - 1);//获取文件的扩展名,如.nc
+	g_extName += ".nc";       //编码后的文件标记为.nc文件
 	
 	for (i = 1; i <= N; i++)
 	{
@@ -351,6 +355,7 @@ void CNetworkCodingDlg::OnBnClickedCode()
 		strcat_s(codeFile, T2A(g_extName.GetBuffer()));//把扩展名连接到文件名
 		fopen_s(&fpCd,codeFile, "wb");
 		fwrite(Mat[i - 1], 1, 1 + K + nLen, fpCd);//写入
+		g_extName.ReleaseBuffer();
 		fclose(fpCd);
 	}
 
@@ -376,8 +381,8 @@ void CNetworkCodingDlg::OnBnClickedCode()
 	delete Mat;
 
 	g_flag = 2;
-	Step_info += "点击Open按钮，打开当前工作目录，可以看到N个codefile文件，若是调试模式，文件生成在项目资源目录下\r\n";
-	Step_info += "点击Recovery按钮，恢复文件或者点击Recode按钮进行再编码";
+	Step_info += "Click the Files Browse button to open the current working directory, you can see the encoded codeFile file.\r\n";
+	Step_info += "Click the Recovery button to recovery the file or click the Recode button to recode.";
 	Scroll();
 }
 
@@ -415,75 +420,118 @@ void CNetworkCodingDlg::OnBnClickedRecovery()
 	
 	if (g_flag != 2){
 		if (g_flag == 0){
-			Step_info += "请点击Select按钮，选择一个文件";
+			Step_info += "Please click the Select button to select a file.";
 			Scroll();
 			return;
 		}
 		if (g_flag == 3 ){
-			Step_info += "编码后的文件已经被删除了，没有文件可供恢复。你可以点击Code按钮重新生成编码文件，也可以重新选择文件";
+			Step_info += "After encoding the file has been deleted, no file for recovery. You can click on the Code button to re generate the encoding file, you can also re select the file";
 			Scroll();
 			return;
 		}
-		Step_info += "请点击Code按钮，开始编码";
+		Step_info += "Please click the Code button to start coding.";
 		Scroll();
 		return;
 	}
 
 
 	
-	Step_info += "开始解码\r\n1、确定解码获取几个codeFile文件，随机获取用来解码的codeFile文件的序号(codeFile为编码后的文件)";
+	Step_info += "Start decoding.\r\n1、Select the files to decode,you can select multiple files";
 	Scroll();
 
-	srand((unsigned)time(NULL));
-	int num = 0;             //随机获取用哪个文件来获取解码时需要的文件个数和文件长度    
-	num = 1 + rand() % N;
+	/************************************************************************/
+	/* Select files                                                         */
+	/************************************************************************/
+	TCHAR szPath[MAX_PATH];
+	GetModuleFileName(NULL, szPath, MAX_PATH);
+	CString PathName(szPath);
+	CString PROGRAM_PATH = PathName.Left(PathName.ReverseFind(_T('\\')) + 1);
+
+	CString str;
 	
-	
+	str="Debug";
+	int position = PROGRAM_PATH.Find(str);
+	if (position != -1){ //不等于-1说明是在调试模式，需要拼接路径
+	PROGRAM_PATH.Replace(str, _T("NetworkCoding"));
+}
+
+	size_t index;
+	CString cstrsucstring;
+	CFileDialog filedlg(TRUE, NULL, NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_ALLOWMULTISELECT, _T("Code Files(*.nc)|*.nc| Picture Files(*.jpg; *.png)|*.jpg;*.png|| "));
+	TCHAR *pBuffer = new TCHAR[MAX_PATH * 100];//最多允许同时打开100个文件
+
+	filedlg.m_ofn.lpstrInitialDir = PROGRAM_PATH;
+	filedlg.m_ofn.lpstrFile = pBuffer;
+	filedlg.m_ofn.nMaxFile = MAX_PATH * 100;
+	filedlg.m_ofn.lpstrFile[0] = '\0';
+
+	int count = 0;
+	CString* cstrfilepath = new CString[100];
+
+	if (filedlg.DoModal() == IDOK)
+	{
+
+		POSITION pos = filedlg.GetStartPosition();
+		while (pos != NULL)
+		{
+			cstrfilepath[count] = _T("");
+			cstrfilepath[count++] = filedlg.GetNextPathName(pos);//取得文件路径
+		}
+	}
+	if (count == 0){
+		Step_info += "You don't have a choice of files.";
+		return;
+	}
+
+	char** fileName = new char*[count];    //分离出不含路径的文件名
+	for (int i = 0; i < count; i++){
+		fileName[i] = new char[32];
+	}
+	USES_CONVERSION;
+	int i,j;
+	for (i = 0; i < count; i++){
+		CString fn = cstrfilepath[i].Right(cstrfilepath[i].GetLength() - cstrfilepath[i].ReverseFind('\\') - 1);
+		char* ch = T2A(fn);
+		for (j = 0; *ch != '\0'; ch++, j++){
+			fileName[i][j] = *ch;
+		}
+		fileName[i][j] = '\0';
+	}
+	delete[] pBuffer;
+	delete[] cstrfilepath;
+
+
+	/************************************************************************/
+	/*  Start decoding.                                                     */
+	/************************************************************************/
+
+
+
 	int nPart = 0;           //用来存放编码前分成相同大小的文件个数
 	long nLength = 0;         //用来存放文件的长度
 
 	FILE *fp;
-	USES_CONVERSION;
-	char codeFile[32];
-	_snprintf_s(codeFile, 32, "codeFile%d.", num);
-	strcat_s(codeFile, T2A(g_extName.GetBuffer()));
-	fopen_s(&fp, codeFile, "rb");
-	fread(&nPart, 1, 1, fp);            //读取需要几个codeFile文件可以恢复数据
+	fopen_s(&fp, fileName[0], "rb");
+	fread(&nPart, 1, 1, fp);
 	fseek(fp, 0, SEEK_END);
-	nLength = ftell(fp);                //读取文件长度
+	nLength = ftell(fp);
 	fclose(fp);
-
-	int i, j;
-	int *fileNum = new int[nPart];		//随机获取再编码文件的序号，存入fileNum数组
-	for (i = 0; i <nPart; i++){
-		fileNum[i] = 1 + rand() % N;
-		for (j = 0; j < i; j++){
-			if (fileNum[i] == fileNum[j]){
-				i--;
-				break;
-			}
-		}
-	}
-
-	CString str;
-	Step_info += "需要codeFile文件的数量nPart=";
-	str.Format(_T("%d"), nPart);
-	Step_info += str;
-	Scroll();
-
-	Step_info += "解码文件的codeFile文件序号\r\n    ";
-	
-	for (i = 0; i < nPart; i++){
-		str.Format(_T("%-6d"), fileNum[i]);
+	if (count < nPart){
+		Step_info += "Select the number of files is not enough, please click on the Recovery again, select at least ";
+		CString str;
+		str.Format(_T("%d"), nPart);
+		str+=" files.";
 		Step_info += str;
+		Scroll();
+		return;
 	}
 
-	Scroll();
 
-	
+
 	
 	byte** MAT;                         //用来存放nPart个解码文件，是一个nPart*nLength的矩阵
 	MAT = new byte*[nPart];
+
 	for (i = 0; i < nPart; i++){
 		MAT[i] = new byte[nLength];
 	}
@@ -492,11 +540,8 @@ void CNetworkCodingDlg::OnBnClickedRecovery()
 	FILE *fpCd;
 	for (i = 0; i < nPart; i++)
 	{
-
-		_snprintf_s(codeFile, 32, "codeFile%d.", fileNum[i]);
-		strcat_s(codeFile, T2A(g_extName.GetBuffer()));
-		fopen_s(&fpCd,codeFile, "rb");
-		fread(MAT[i], 1, nLength, fpCd);           //把文件读入数组
+		fopen_s(&fpCd, fileName[i], "rb");
+		fread(MAT[i], 1, nLength, fpCd);
 		fclose(fpCd);
 	}
 	
@@ -516,7 +561,7 @@ void CNetworkCodingDlg::OnBnClickedRecovery()
 			MAT1[i][j] = MAT[i][j + 1];
 		}
 	}
-	Step_info += "2、解码。用编码矩阵的逆矩阵乘以编码结果";
+	Step_info += "2、Decoding. The inverse matrix of the coding matrix is multiplied by the result of the coding.";
 	Scroll();
 
 	byte** MAT2;               //编码结果为nPart*(nLength-nPart-1)矩阵
@@ -546,15 +591,19 @@ void CNetworkCodingDlg::OnBnClickedRecovery()
 		return;
 	}
 	
-	Step_info += "3、把解码结果读入文件，解码结束";
+	Step_info += "3、The decoding results into the file, the end of the decoding.";
 	Scroll();
 
 	//把MAT4写回文件
+	str=fileName[0];
+	CString ext1 = str.Right(str.GetLength() - str.Find('.') - 1);//如jpg.nc
+	CString extName = ext1.Left(ext1.GetLength() - ext1.Find('.'));
+	
+	CString fn ("recovery.");
+	fn += extName;
+	
 	FILE* fp1;
-	char fileName[32];
-	_snprintf_s(fileName, 32, "recovery.");
-	strcat_s(fileName, T2A(g_extName.GetBuffer()));
-	fopen_s(&fp1,fileName, "wb");
+	fopen_s(&fp1,T2A(fn),"wb");
 	for (i = 0; i < nPart; i++)
 	{
 		fwrite(MAT4[i], 1, nLength - nPart - 1, fp1);//写入
@@ -564,6 +613,7 @@ void CNetworkCodingDlg::OnBnClickedRecovery()
 	
 	//clear the memory
 	for (i = 0; i < nPart; i++){
+		delete[] fileName[i];
 		delete[] MAT[i];
 		delete[] MAT1[i];
 		delete[] MAT2[i];
@@ -571,15 +621,15 @@ void CNetworkCodingDlg::OnBnClickedRecovery()
 		delete[] MAT4[i];
 
 	}
-	delete[] fileNum;
+	delete fileName;
 	delete MAT;
 	delete MAT1;
 	delete MAT2;
 	delete MAT3;
 	delete MAT4;
-	Step_info += "点击Open按钮，打开当前工作目录，可以看到恢复文件recovery，若是调试模式，文件生成在项目资源目录下\r\n点击Clear按钮，可以清理程序执行过程中生成的文件";
+	Step_info += "Click the Browse Files button to open the current working directory, you can see the recovery file .\r\n";
+	Step_info += "Click the Clear button, you can clean up the process of the implementation of the program generated files, the recovery of the file will not be deleted.";
 	Scroll();
-	
 
 }
 
@@ -872,6 +922,14 @@ void CNetworkCodingDlg::OnBnClickedOpendirectory()
 	GetModuleFileName(NULL, szPath, MAX_PATH);
 	CString PathName(szPath);
 	CString PROGRAM_PATH = PathName.Left(PathName.ReverseFind(_T('\\')) + 1);
+
+	
+	CString str("Debug");
+	int position = PROGRAM_PATH.Find(str);
+	if (position != -1){ //不等于-1说明是在调试模式，需要拼接路径
+		PROGRAM_PATH.Replace(str, _T("NetworkCoding"));
+	}
+
 	ShellExecute(NULL, NULL, _T("explorer"), PROGRAM_PATH, NULL, SW_SHOW);
 }
 
@@ -883,24 +941,31 @@ void CNetworkCodingDlg::OnBnClickedClear()
 {
 	// TODO: Add your control notification handler code here
 	if (g_flag != 2){
-		Step_info += "没有程序执行时生成的文件要删除";
+		Step_info += "No file generated when the program is executed to delete.";
 		Scroll();
 		return;
 	}
 	int i;
 	char fileName[32];
 	USES_CONVERSION;
-	for (i = 1; i < N + 1; i++)
+	for (i = 1; i <= N; i++)
 	{
 		_snprintf_s(fileName, 32, "codeFile%d.", i);
 		strcat_s(fileName, T2A(g_extName.GetBuffer()));
 		remove(fileName);
 	}
-	_snprintf_s(fileName, 32, "recovery.");
-	strcat_s(fileName, T2A(g_extName.GetBuffer()));
-	remove(fileName);
+	for (i = 1; i <= N; i++)
+	{
+		_snprintf_s(fileName, 32, "reCodeFile%d.", i);
+		strcat_s(fileName, T2A(g_extName.GetBuffer()));
+		remove(fileName);
+	}
+	remove("*.nc");
 	g_flag = 3;
-	Step_info += "文件已删除";
+	Step_info = "";
+	Step_info += "Recovery files will not be deleted.";
+	Step_info += "Files generated during the execution of the process have been deleted.\r\n";
+	Step_info += "Program Operation Process";
 	Scroll();
 }
 
@@ -919,152 +984,196 @@ void CNetworkCodingDlg::OnEnChangeProgress()
 void CNetworkCodingDlg::OnBnClickedRecode()
 {
 	// TODO: Add your control notification handler code here
-	
+
 	if (g_flag != 2){
-		Step_info += "没有编码后的文件可供再编码,点击Code按钮开始编码";
+		if (g_flag == 0){
+			Step_info += "Please click the Select button to select a file.";
+			Scroll();
+			return;
+		}
+		Step_info += "No encoded files can be recoded, click the Code button to start coding.";
 		Scroll();
 		return;
 	}
-	
 
-	Step_info += "1、开始再编码，随机生成再编码文件的数量，随机选择需要再编码的文件";
+
+	Step_info += "1、Start recoding, select files, you can select multiple files.";
 	Scroll();
 
+	/************************************************************************/
+	/* Select files                                                         */
+	/************************************************************************/
 
-	srand((unsigned)time(NULL));
+	TCHAR szPath[MAX_PATH];
+	GetModuleFileName(NULL, szPath, MAX_PATH);
+	CString PathName(szPath);
+	CString PROGRAM_PATH = PathName.Left(PathName.ReverseFind(_T('\\')) + 1);
 
-	int num=0;                    //再编码文件的数量
-	num =1 + rand()%N;
 	CString str;
-	Step_info += "再编码文件的数量num=";
-	str.Format(_T("%d"), num);
-	Step_info += str;
-	Scroll();
+	
+	str="Debug";
+	int position = PROGRAM_PATH.Find(str);
+	if (position != -1){   //不等于-1说明是在调试模式，需要拼接路径
+		PROGRAM_PATH.Replace(str, _T("NetworkCoding"));
+	}
 
+	size_t index;
+	CString cstrsucstring;
+	CFileDialog filedlg(TRUE, NULL, NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_ALLOWMULTISELECT, _T("Code Files(*.nc)|*.nc| Picture Files(*.jpg; *.png)|*.jpg;*.png|| "));
+	TCHAR *pBuffer = new TCHAR[MAX_PATH * 100];//最多允许同时打开100个文件
 
-	int i, j;
-	int *fileNum=new int[N];		//随机获取再编码文件的序号，存入fileNum数组
-	for (i = 0; i <num; i++){
-		fileNum[i] = 1 + rand() % N;
-		for (j = 0; j < i; j++){
-				if (fileNum[i] == fileNum[j]){
-					i--;
-					break;
-				}
+	filedlg.m_ofn.lpstrInitialDir = PROGRAM_PATH;
+	filedlg.m_ofn.lpstrFile = pBuffer;
+	filedlg.m_ofn.nMaxFile = MAX_PATH * 100;
+	filedlg.m_ofn.lpstrFile[0] = '\0';
+
+	int count = 0;
+	CString* cstrfilepath = new CString[100];
+
+	if (filedlg.DoModal() == IDOK)
+	{
+
+		POSITION pos = filedlg.GetStartPosition();
+		while (pos != NULL)
+		{
+			cstrfilepath[count] = _T("");
+			cstrfilepath[count++] = filedlg.GetNextPathName(pos);//取得文件路径
 		}
 	}
-	
-	Step_info += "再编码文件的codeFile文件序号\r\n    ";
-   
-	char codeFile[32];
-	for (i = 0; i < num; i++){
-		str.Format(_T("%-6d"),fileNum[i]);
-		Step_info += str;
+	if (count == 0){
+		Step_info += "你没有选择文件";
+		Scroll();
+		return;
 	}
 
-	Scroll();
+	char** fileName = new char*[count];
+	for (int i = 0; i < count; i++){
+		fileName[i] = new char[32];
+	}
+	
+	int i, j;
+	USES_CONVERSION;
+	for (i = 0; i < count; i++){//从路径中分理出文件名
+		CString fn = cstrfilepath[i].Right(cstrfilepath[i].GetLength() - cstrfilepath[i].ReverseFind('\\') - 1);
+		char* ch=T2A(fn);
+		for (j=0; *ch != '\0'; ch++,j++){
+			fileName[i][j] = *ch;
+		}
+		fileName[i][j] = '\0';
+	}
+	delete[] pBuffer;
+	delete[] cstrfilepath;
+	
+	
 
-	Step_info += "2、生成随机的再编码矩阵";
+	/************************************************************************/
+	/*  Start recoding                                                      */
+	/************************************************************************/
+
+	Step_info += "2、Get recoding matrix.";
 	Scroll();
 
 	byte** reCodeMatrix;                     //生成随机的再编码矩阵
-	reCodeMatrix = new byte*[num];
-	for (i = 0; i < num; i++){
-		reCodeMatrix[i] = new byte[num];
+	reCodeMatrix = new byte*[count];
+
+	for (i = 0; i < count; i++){
+		reCodeMatrix[i] = new byte[count];
 	}
-	for (i = 0; i < num; i++)     
+	srand((unsigned)time(NULL));
+	for (i = 0; i < count; i++)
 	{
-		for (j = 0; j < num; j++)
+		for (j = 0; j < count; j++)
 		{
 			reCodeMatrix[i][j] = rand() % 256;
 
 		}
 	}
 
-	Step_info += "3、从前一次编码后的文件中取出数据放入二维数组";
+	Step_info += "3、Remove the data from the selected file into a two-dimensional array.";
 	Scroll();
 
-	
-	FILE *fp;
-	                          //取出编码前分成的部分个数
 
-	USES_CONVERSION;
-	_snprintf_s(codeFile, 32, "codeFile%d.", fileNum[0]);
-	strcat_s(codeFile, T2A(g_extName.GetBuffer()));
-	fopen_s(&fp, codeFile, "rb");
+	FILE *fp;
+	fopen_s(&fp, fileName[0], "rb");
 	fseek(fp, 0, SEEK_END);
-	long length = 0;						
+	long length = 0;
 	length = ftell(fp);					  //获取codeFile文件的长度
 	fclose(fp);
 
 
 	byte** Buffer;							//把编码后文件读入数组
-	Buffer = new byte*[num];					//Buffer矩阵用于codeFile文件的读入与写回
-	for (i = 0; i < num; i++){
+	Buffer = new byte*[count];					//Buffer矩阵用于选择文件的读入与写回
+	for (i = 0; i < count; i++){
 		Buffer[i] = new byte[length];
 	}
 
 	FILE* fpCd;
-	
-	for (i = 0; i < num; i++){
-		_snprintf_s(codeFile, 32, "codeFile%d.", fileNum[i]);
-		strcat_s(codeFile, T2A(g_extName.GetBuffer()));
-		fopen_s(&fpCd, codeFile, "rb");
-		fread(Buffer[i], 1, length, fpCd);           
+
+	for (i = 0; i < count; i++){
+
+		fopen_s(&fpCd, fileName[i], "rb");
+		fread(Buffer[i], 1, length, fpCd);
 		fclose(fpCd);
 	}
 
-	
+
 	byte** matrix1;                          //取出编码矩阵和编码后的数据
-	matrix1 = new byte*[num];					 //Buffer数组的第0列存的是文件编码前平均分成的个数，这一列不读出	
-	for (i = 0; i < num; i++){
+	matrix1 = new byte*[count];
+	for (i = 0; i < count; i++){
 		matrix1[i] = new byte[length - 1];
 	}
-	
-	for (i = 0; i < num; i++){
-		for (j = 0; j < length-1; j++){
-			matrix1[i][j] = Buffer[i][j + 1];
+
+	for (i = 0; i < count; i++){
+		for (j = 0; j < length - 1; j++){
+			matrix1[i][j] = Buffer[i][j + 1];  //Buffer数组的第0列存的是文件编码前平均分成的个数，这一列不读出	
 		}
 	}
 
-	Step_info += "4、再编码。用再编码矩阵乘以数据矩阵";
+	Step_info += "4、Recoding. Using the re encoding matrix to multiply the data matrix";
 	Scroll();
 
 	byte** MAT;									//再编码
-	MAT = Multiply(reCodeMatrix, matrix1, num, num, length - 1);
+	MAT = Multiply(reCodeMatrix, matrix1, count, count, length - 1);
 
 
 
-	Step_info += "5、把再编码后的数据重新写回文件，再编码结束";
+	Step_info += "5、The re encoded data re written back to the file, and then the end of the coding.";
 	Scroll();
 
-	for (i = 0; i < num; i++){                   //把再编码后的数据重新读回数组
+	for (i = 0; i < count; i++){                   //把再编码后的数据重新读回数组
 		for (j = 1; j < length; j++){
 			Buffer[i][j] = MAT[i][j - 1];
 		}
 	}
-
-	for (i = 0; i < num; i++)                           //把数据写回文件
+	
+	
+	for (i = 0; i < count; i++)                           //把数据写回文件
 	{
-		_snprintf_s(codeFile, 32, "codeFile%d.", fileNum[i]);
-		strcat_s(codeFile, T2A(g_extName.GetBuffer()));
-		fopen_s(&fpCd, codeFile, "wb");
+		
+		str = fileName[i];
+		CString extName = str.Right(str.GetLength() - str.ReverseFind('e') - 1);//取出的有序号(1).*.nc
+		remove(T2A(str));      //对再编码后的文件重命名
+		CString fn;
+		fn = _T("reCodeFile") + extName;
+		fopen_s(&fpCd, T2A(fn), "wb");
 		fwrite(Buffer[i], 1, length, fpCd);       //写入
 		fclose(fpCd);
 	}
 
-	for(i = 0; i < num; i++){
+	for (i = 0; i < count; i++){
+		delete[] fileName[i];
 		delete[] reCodeMatrix[i];
 		delete[] Buffer[i];
 		delete[] matrix1[i];
 		delete[] MAT[i];
 	}
-	delete[] fileNum;
+	delete fileName;
 	delete reCodeMatrix;
 	delete Buffer;
 	delete matrix1;
 	delete MAT;
-	Step_info += "点击Recovery按钮，恢复文件";
+	Step_info += "Click the Browse Files button to open the current working directory, you can see the reCodeFile file.\r\n";
+	Step_info += "Click the Recovery button to recovery the file.";
 	Scroll();
 }
 
@@ -1079,3 +1188,16 @@ void CNetworkCodingDlg::Scroll()//把edit control滚动到最后一行
 	CEdit* pedit = (CEdit*)GetDlgItem(IDC_Progress);
 	pedit->LineScroll(pedit->GetLineCount());
 }
+
+
+
+
+
+void CNetworkCodingDlg::PostNcDestroy()
+{
+	OnBnClickedClear();
+	CDialog::PostNcDestroy();
+}
+
+
+

@@ -55,4 +55,6 @@ public:
 //	void stepInfo();
 	void Scroll();
 	CString g_extName;
+//	char** SelectFile(int num);
+	void PostNcDestroy();
 };
