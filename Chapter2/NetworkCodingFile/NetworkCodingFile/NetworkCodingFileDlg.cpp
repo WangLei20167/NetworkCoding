@@ -299,7 +299,7 @@ void CNetworkCodingFileDlg::OnBnClickedEncode()
 		{
 			encodeMatrix[i][j] = rand() % 256;
 			str.Format(_T("%d"), encodeMatrix[i][j]);
-			str += "\t";
+			str += " \t";
 			Step_info += str;
 		}
 
