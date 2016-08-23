@@ -1,3 +1,4 @@
-这是一个文件编码程序。
-你可以点击release文件查看该程序的发布版。
-你有任何问题，欢迎发邮件到leiwang@njupt.edu.cn询问。
+This is a file encoding process.
+You can click on the release file to see the release of the program.
+You have any questions, please email to leiwang@njupt.edu.cn.
+
