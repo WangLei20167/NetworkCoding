@@ -158,6 +158,14 @@ GFType gfdiv(GFType a, GFType b)
 
 GFType gf_exp(GFType a, GFType n)
 {
+	if (a==0 && n==0)
+	{
+		return 1;
+	}
+	if (a==0 && n!=0)
+	{
+		return 0;
+	}
 	return table_alpha[table_index[a]*n%(gFieldSize-1)];
 }
 
