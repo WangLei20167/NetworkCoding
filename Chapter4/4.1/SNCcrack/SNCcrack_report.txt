@@ -1,0 +1,9 @@
+The original matrix is
+85	47	52	52	
+11	100	25	63	
+
+After elementary transformations of matrix, the new matrix is
+85	0	230	88	
+0	245	58	28	
+
+Secure! From the matrix above, we know that the eavesdropper  could  not obtain any original packets since there is no row vector in which there is only one nonzero element. And this implies that the associated data must not be original data.
