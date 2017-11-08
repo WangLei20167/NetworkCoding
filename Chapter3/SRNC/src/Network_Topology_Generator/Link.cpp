@@ -1,0 +1,27 @@
+// Link.cpp: implementation of the CLink class.
+//
+//////////////////////////////////////////////////////////////////////
+
+#include "stdafx.h"
+#include "Network_Topology_Generator.h"
+#include "Link.h"
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[]=__FILE__;
+#define new DEBUG_NEW
+#endif
+
+//////////////////////////////////////////////////////////////////////
+// Construction/Destruction
+//////////////////////////////////////////////////////////////////////
+
+CLink::CLink()
+{
+	nLinkNum = 0;
+}
+
+CLink::~CLink()
+{
+
+}

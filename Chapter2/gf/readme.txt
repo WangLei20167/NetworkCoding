@@ -1,3 +1,6 @@
+
+《网络编码理论与实践》第二章第四节 基于C/C++的快速有限域运算库详解
+
 1 Introduction
 This is a fast Galois field library, and all the source files are free software; This labrary has some significant differences compared with previous Galios field labraries.
 

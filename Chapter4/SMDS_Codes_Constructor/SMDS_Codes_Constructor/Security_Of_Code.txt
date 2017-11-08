@@ -1,0 +1,25 @@
+The original matrix is 
+   8    9   12 
+   0   11    2 
+   5    2   13 
+  10   11    1 
+   3   11    6 
+
+The required field size is GF(16)
+Row=5, Multicast capacity h=Column=3
+u=1: Satisfied!,C(5,1)=5 different combinations have been tested.
+
+However, when u=2, some meaningful information leaks.
+There are C(5,2)=10 different combinations, when we proceed to the 2-th combination, some meaningful information leaks.
+
+This combination of vectors doesn't satisfy the condition of 2-secure network codes
+1 3 
+These row vectors will form a matrix shown as follows.
+   8    9   12 
+   5    2   13 
+
+This matrix can be translated into the following matrix after elementary row transformation.
+   8    0    0 
+   0    8    6 
+
+There is a vector with only one non-zero element in the new matrix, which implies that the eavesdropper can obtain some meaningful information.Therefore, the network codes constructed by this generator matrix only satisfy the condition of 1-secure network codes.

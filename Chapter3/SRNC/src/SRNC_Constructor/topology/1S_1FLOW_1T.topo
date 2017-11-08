@@ -1,0 +1,11 @@
+4 3
+NodeList
+Source 351 126
+Relay 339 212
+Relay 322 287
+Sink 289 378
+
+LinkList
+S 351 126 339 212
+S 339 212 322 287
+S 322 287 289 378

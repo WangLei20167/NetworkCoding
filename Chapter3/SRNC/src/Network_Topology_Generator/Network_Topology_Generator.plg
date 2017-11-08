@@ -1,0 +1,57 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: Network_Topology_Generator - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\Users\ADMINI~1\AppData\Local\Temp\RSPF7E2.tmp" with contents
+[
+/nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /Fp"Release/Network_Topology_Generator.pch" /Yu"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"E:\&&多速率\Network_Topology_Generator\Network_Topology_Generator.cpp"
+"E:\&&多速率\Network_Topology_Generator\Network_Topology_GeneratorDlg.cpp"
+]
+Creating command line "cl.exe @C:\Users\ADMINI~1\AppData\Local\Temp\RSPF7E2.tmp" 
+Creating temporary file "C:\Users\ADMINI~1\AppData\Local\Temp\RSPF7E3.tmp" with contents
+[
+/nologo /subsystem:windows /incremental:no /pdb:"Release/Network_Topology_Generator.pdb" /machine:I386 /out:"Release/Network_Topology_Generator.exe" 
+".\Release\Link.obj"
+".\Release\Network_Topology_Generator.obj"
+".\Release\Network_Topology_GeneratorDlg.obj"
+".\Release\Node.obj"
+".\Release\StdAfx.obj"
+".\Release\Network_Topology_Generator.res"
+]
+Creating command line "link.exe @C:\Users\ADMINI~1\AppData\Local\Temp\RSPF7E3.tmp"
+<h3>Output Window</h3>
+Compiling...
+Network_Topology_Generator.cpp
+Network_Topology_GeneratorDlg.cpp
+E:\&&多速率\Network_Topology_Generator\Network_Topology_GeneratorDlg.cpp(326) : warning C4244: 'argument' : conversion from 'double' to 'int', possible loss of data
+E:\&&多速率\Network_Topology_Generator\Network_Topology_GeneratorDlg.cpp(326) : warning C4244: 'argument' : conversion from 'double' to 'int', possible loss of data
+E:\&&多速率\Network_Topology_Generator\Network_Topology_GeneratorDlg.cpp(328) : warning C4244: 'argument' : conversion from 'double' to 'int', possible loss of data
+E:\&&多速率\Network_Topology_Generator\Network_Topology_GeneratorDlg.cpp(328) : warning C4244: 'argument' : conversion from 'double' to 'int', possible loss of data
+E:\&&多速率\Network_Topology_Generator\Network_Topology_GeneratorDlg.cpp(614) : warning C4018: '==' : signed/unsigned mismatch
+E:\&&多速率\Network_Topology_Generator\Network_Topology_GeneratorDlg.cpp(614) : warning C4018: '==' : signed/unsigned mismatch
+E:\&&多速率\Network_Topology_Generator\Network_Topology_GeneratorDlg.cpp(614) : warning C4018: '==' : signed/unsigned mismatch
+E:\&&多速率\Network_Topology_Generator\Network_Topology_GeneratorDlg.cpp(614) : warning C4018: '==' : signed/unsigned mismatch
+E:\&&多速率\Network_Topology_Generator\Network_Topology_GeneratorDlg.cpp(647) : warning C4244: 'argument' : conversion from 'double' to 'int', possible loss of data
+E:\&&多速率\Network_Topology_Generator\Network_Topology_GeneratorDlg.cpp(805) : warning C4018: '<' : signed/unsigned mismatch
+E:\&&多速率\Network_Topology_Generator\Network_Topology_GeneratorDlg.cpp(818) : warning C4018: '<' : signed/unsigned mismatch
+E:\&&多速率\Network_Topology_Generator\Network_Topology_GeneratorDlg.cpp(868) : warning C4018: '>' : signed/unsigned mismatch
+E:\&&多速率\Network_Topology_Generator\Network_Topology_GeneratorDlg.cpp(935) : warning C4018: '==' : signed/unsigned mismatch
+E:\&&多速率\Network_Topology_Generator\Network_Topology_GeneratorDlg.cpp(949) : warning C4018: '==' : signed/unsigned mismatch
+E:\&&多速率\Network_Topology_Generator\Network_Topology_GeneratorDlg.cpp(1001) : warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+E:\&&多速率\Network_Topology_Generator\Network_Topology_GeneratorDlg.cpp(1016) : warning C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
+Generating Code...
+Linking...
+LINK : warning LNK4089: all references to "SHELL32.dll" discarded by /OPT:REF
+
+
+
+<h3>Results</h3>
+Network_Topology_Generator.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>
