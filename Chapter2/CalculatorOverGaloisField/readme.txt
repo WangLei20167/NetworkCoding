@@ -1,4 +1,6 @@
 
-����һ������������ļ�������
+这是一个基于有限域的计算器。
 
-�����κ����⣬��ӭ���ʼ���leiwang@njupt.edu.cnѯ�ʡ�
+《网络编码理论与实践》第二章第一节  MFC程序源码。
+
+你有任何问题，欢迎发邮件到leiwang@njupt.edu.cn询问。
