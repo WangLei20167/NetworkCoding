@@ -1,7 +1,7 @@
-¡¶ÍøÂç±àÂëÀíÂÛÓëÊµ¼ù¡·µÚÎåÕÂµÚ¶ş½Ú AndroidÏµÍ³ÖĞÍøÂç±àÂëĞÔÄÜÆÀ¹À
+ã€Šç½‘ç»œç¼–ç ç†è®ºä¸å®è·µã€‹ç¬¬äº”ç« ç¬¬äºŒèŠ‚ Androidç³»ç»Ÿä¸­ç½‘ç»œç¼–ç æ€§èƒ½è¯„ä¼°
 
-ÕâÊÇÒ»¸öAndroid Studio¹¤³ÌÎÄ¼ş¡£
+è¿™æ˜¯ä¸€ä¸ªAndroid Studioå·¥ç¨‹æ–‡ä»¶ã€‚
 
-Ô´ÂëµØÖ·£ºhttps://github.com/WangLei20167/NC_Ability_Test_Jni
+æºç æŸ¥çœ‹åœ°å€ï¼šhttps://github.com/WangLei20167/NC_Ability_Test_Jni
 
-ÄãÓĞÈÎºÎÎÊÌâ£¬»¶Ó­·¢ÓÊ¼şµ½leiwang@njupt.edu.cnÑ¯ÎÊ¡£
+ä½ æœ‰ä»»ä½•é—®é¢˜ï¼Œæ¬¢è¿å‘é‚®ä»¶åˆ°leiwang@njupt.edu.cnè¯¢é—®ã€‚
